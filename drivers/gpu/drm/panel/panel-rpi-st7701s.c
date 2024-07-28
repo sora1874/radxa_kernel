@@ -23,7 +23,6 @@ struct st7701s_panel {
 	struct drm_panel panel;
 	struct mipi_dsi_device *dsi;
 	const struct st7701s_panel_desc *desc;
-	struct gpio_desc *reset;
 };
 
 static int st7701s_dcs_write(struct mipi_dsi_device *dsi,
@@ -122,11 +121,6 @@ static int st7701s_panel_prepare(struct drm_panel *panel)
 	struct st7701s_panel *data =
 		container_of(panel, struct st7701s_panel, panel);
 
-	gpiod_set_value_cansleep(data->reset, 0);
-	msleep(30);
-	gpiod_set_value_cansleep(data->reset, 1);
-	msleep(150);
-
 	mipi_dsi_dcs_soft_reset(data->dsi);
 
 	return 0;
@@ -194,8 +188,6 @@ static int st7701s_panel_unprepare(struct drm_panel *panel)
 
 	mipi_dsi_dcs_enter_sleep_mode(data->dsi);
 
-	gpiod_set_value_cansleep(data->reset, 0);
-
 	return 0;
 }
 
@@ -260,8 +252,8 @@ static const struct st7701s_panel_desc w280bf036i_desc = {
 
 static const struct of_device_id st7701s_of_match[] = {
 	{
-	.compatible = "st7701s,480x640",
-	.data = &w280bf036i_desc
+		.compatible = "st7701s,480x640",
+		.data = &w280bf036i_desc
 	},
 	{}
 };
@@ -286,14 +278,6 @@ static int st7701s_probe(struct mipi_dsi_device *dsi)
 	dsi->format = desc->format;
 	dsi->lanes = desc->lanes;
 
-	data->reset = devm_gpiod_get(&dsi->dev,
-					"reset", GPIOD_OUT_LOW);
-	if (IS_ERR(data->reset)) {
-		dev_err(&dsi->dev,
-			"%s-->[%d]: get reset failed\n",
-			__func__, __LINE__);
-		return PTR_ERR(data->reset);
-	}
 	drm_panel_init(&data->panel, &dsi->dev,
 			&st7701s_funcs, DRM_MODE_CONNECTOR_DSI);
 

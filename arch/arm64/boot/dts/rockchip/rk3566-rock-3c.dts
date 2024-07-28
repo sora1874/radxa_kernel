@@ -7,9 +7,11 @@
 
 /dts-v1/;
 #include "rk3566-rock-3c.dtsi"
+#include "rk3566-unlasting-rock3c-st7701s.dtsi"
+#include "rk3566-unlasting-rock3c-camera.dtsi"
 
 / {
-	model = "Radxa ROCK3 Model C";
+	model = "Unlasting Rock 3C";
 	compatible = "radxa,rock-3c-ap6256", "radxa,rock-3c", "rockchip,rk3566";
 
 	sdio_pwrseq: sdio-pwrseq {
@@ -25,6 +27,7 @@
 		 * - PDN (power down when low)
 		 */
 		reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
+		status = "okay";
 	};
 };
 

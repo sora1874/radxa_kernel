@@ -152,6 +152,28 @@
 		regulator-boot-on;
 	};
 
+	ext_cam_ov5647_clk: external-camera-ov5647-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <25000000>;
+		clock-output-names = "ext_cam_ov5647_clk";
+		#clock-cells = <0>;
+		status = "okay";
+	};
+
+	vcc_camera: vcc-camera {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc_cam_en>;
+		regulator-name = "vcc_mipi_csi";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
+		status = "okay";
+	};
+
 	gpio-leds {
 		compatible = "gpio-leds";
 		status = "okay";
@@ -218,6 +240,8 @@
 };
 
 &gpu {
+	clock-names = "gpu", "bus";
+	interrupt-names = "gpu", "mmu", "job";
 	mali-supply = <&vdd_gpu>;
 	status = "okay";
 };
@@ -241,7 +265,7 @@
 };
 
 &hdmi_sound {
-	status = "okay";
+	status = "disabled";
 };
 
 &route_hdmi {
@@ -1003,6 +1027,10 @@
 	leds {
 		led_ctl: led-ctl {
 			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		vcc_cam_en: vcc-cam-en {
+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 };
