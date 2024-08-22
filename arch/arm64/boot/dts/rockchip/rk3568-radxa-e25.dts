@@ -239,6 +239,23 @@
 	pinctrl-0 = <&pcie30x2m1_pins>;
 	rockchip,bifurcation;
 	status = "okay";
+
+	pcie@40 {
+		reg = <0x00400000 0 0 0 0>;
+		#address-cells = <3>;
+		#size-cells = <2>;
+
+		rtl8125_1: pcie-eth@40,0 {
+			compatible = "pci10ec,8125";
+			reg = <0x000000 0 0 0 0>;
+
+			// LED0 => G+ , LED1 => G- , LED2 => Y-
+			// LED0=High active, blink on every speed act
+			// LED1=Low active, always on every speed link
+			// LED2=LED1
+			realtek,led-data = <0x1200 0x2b 0x2b 0>;
+		};
+	};
 };
 
 &pcie3x1 {
@@ -254,6 +271,23 @@
 	vpcie3v3-supply = <&pcie30_3v3>;
 	pinctrl-0 = <&pcie20m2_pins>;
 	status = "okay";
+
+	pcie@40 {
+		reg = <0x00400000 0 0 0 0>;
+		#address-cells = <3>;
+		#size-cells = <2>;
+
+		rtl8125_2: pcie-eth@40,0 {
+			compatible = "pci10ec,8125";
+			reg = <0x000000 0 0 0 0>;
+
+			// LED0 => G+ , LED1 => G- , LED2 => Y-
+			// LED0=High active, blink on every speed act
+			// LED1=Low active, always on every speed link
+			// LED2=LED1
+			realtek,led-data = <0x1200 0x2b 0x2b 0>;
+		};
+	};
 };
 
 &sata1 {
